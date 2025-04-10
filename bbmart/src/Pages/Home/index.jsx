@@ -1,178 +1,285 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import HomeSlider from "../../components/HomeSlider";
 import HomeCatSlider from "../../components/HomeCatSlider";
 import { FaShippingFast } from "react-icons/fa";
 import AdsBannerSlider from "../../components/AdsBannerSlider";
-
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
 import ProductsSlider from "../../components/ProductsSlider";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-
+import "swiper/css/pagination";
 // import required modules
-// import { Pagination } from 'swiper/modules';
-
-// import required modules
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import BlogItem from "../../components/BlogItem";
-import Footer from "../../components/Footer/footer";
+import { Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { products } from "../../data/products";
 
-function ScrollableTabsButtonAuto() {
-  const [value, setValue] = React.useState(0);
+// Sample blog data
+const blogPosts = [
+  {
+    id: 1,
+    title: "10 Creative Ways to Use Your Notebook",
+    excerpt: "Discover unique and inspirational ways to utilize your notebook beyond simple note-taking...",
+    date: "April 8, 2025",
+    image: "https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: 2,
+    title: "The History of Stationery: From Quills to Digital",
+    excerpt: "Explore the fascinating evolution of writing instruments throughout human history...",
+    date: "April 2, 2025",
+    image: "https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: 3,
+    title: "Sustainable Stationery: Eco-Friendly Options",
+    excerpt: "Learn about environmentally conscious alternatives to traditional paper products...",
+    date: "March 27, 2025",
+    image: "https://images.unsplash.com/photo-1544239265-ee5eedde5469?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: 4,
+    title: "Bullet Journaling: Organization Made Beautiful",
+    excerpt: "Master the art of bullet journaling with these tips and tricks for beginners...",
+    date: "March 20, 2025",
+    image: "https://images.unsplash.com/photo-1598275326217-c2d47df9c7ac?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: 5,
+    title: "Back to School: Essential Supplies for Success",
+    excerpt: "Prepare for the new academic year with our guide to must-have school supplies...",
+    date: "March 15, 2025",
+    image: "https://images.unsplash.com/photo-1600058644231-f59e7e431501?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+  }
+];
+
+// Filter products by category for each section
+const getProductsByCategory = (category) => {
+  return products.filter(product => product.category.toLowerCase() === category.toLowerCase()).slice(0, 8);
+};
+
+// Create product sets
+const popularProducts = products.filter(product => product.popular).slice(0, 10);
+const newProducts = products.slice(0, 10);
+const featuredProducts = products.filter(product => product.featured).slice(0, 10);
+
+function ProductTabs() {
+  const [value, setValue] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Tabs
-      value={value}
-      onChange={handleChange}
-      variant="scrollable"
-      scrollButtons="auto"
-      aria-label="scrollable auto tabs example"
-    >
-      <Tab label="Item One" />
-      <Tab label="Item Two" />
-      <Tab label="Item Three" />
-      <Tab label="Item Four" />
-      <Tab label="Item Five" />
-      <Tab label="Item Six" />
-      <Tab label="Item Seven" />
-      <Tab label="Item One" />
-      <Tab label="Item Two" />
-      <Tab label="Item Three" />
-      <Tab label="Item Four" />
-      <Tab label="Item Five" />
-      <Tab label="Item Six" />
-      <Tab label="Item Seven" />
-    </Tabs>
+    <Box sx={{ 
+      width: '100%', 
+      typography: { 
+        fontSize: { 
+          xs: '0.8rem', 
+          sm: '0.875rem' 
+        } 
+      } 
+    }}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="scrollable"
+        scrollButtons="auto"
+        aria-label="product category tabs"
+        sx={{
+          '& .MuiTab-root': {
+            minHeight: '44px',
+            padding: '8px 16px',
+            fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' }
+          }
+        }}
+      >
+        <Tab label="All Products" />
+        <Tab label="Notebooks" />
+        <Tab label="Pens" />
+        <Tab label="Markers" />
+        <Tab label="Accessories" />
+        <Tab label="Organizers" />
+      </Tabs>
+    </Box>
   );
 }
 
 export const Home = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <>
       <HomeSlider />
       <HomeCatSlider />
-      <section className="bg-white py-10 mt-5">
-        <div className="container">
-          <div className="flex items-center justify-between">
-            <div className="leftSec">
-              <h2 className="text-[25px] font-[600]">Popular Products</h2>
-              <p className="text-[14px] font-[400]">
+      
+      {/* Popular Products Section */}
+      <section className="bg-white py-8 mt-4">
+        <div className="container px-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div className="flex-1">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-1">Popular Products</h2>
+              <p className="text-sm text-gray-600">
                 Do not miss the current offers until the end of March
               </p>
             </div>
-            <div className="rightSec w-[60%]">
-              <ScrollableTabsButtonAuto />
+            <div className="w-full md:w-auto md:flex-1">
+              <ProductTabs />
             </div>
           </div>
 
-          <ProductsSlider items={6} />
+          <ProductsSlider 
+            products={popularProducts} 
+            slidesPerViewMobile={1.2}
+            slidesPerViewTablet={2.5}
+            slidesPerViewDesktop={4}
+            slidesPerViewLarge={5}
+          />
         </div>
       </section>
 
-      <section className="py-10 bg-white mt-5">
-        <div className="container">
-          <div className="freeShipping w-[80%] m-auto py-4 p-4 border-2 border-[#ffa9a9] flex items-center justify-between  rounded-md mb-5">
-            <div className="col1 flex items-center gap-4">
-              <FaShippingFast className="text-[50px]" />
-              <span className="text-[20px] font-[600] uppercase">
-                {" "}
-                Free Shipping
-              </span>
-            </div>
+      {/* Free Shipping Banner */}
+      <section className="py-6 bg-white">
+        <div className="container px-4">
+          <div className="shipping-banner w-full lg:w-[90%] mx-auto py-4 px-4 sm:px-6 border-2 border-red-200 rounded-lg shadow-sm bg-gradient-to-r from-red-50 to-white">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <FaShippingFast className="text-3xl sm:text-4xl text-red-500" />
+                <span className="text-base sm:text-lg font-semibold uppercase">
+                  Free Shipping
+                </span>
+              </div>
 
-            <div className="col2">
-              <p className="mb-0 font-[500]">
-                Free delivery on your first order and over 500 Rs
-              </p>
-            </div>
+              <div className="text-center sm:text-left">
+                <p className="font-medium text-sm sm:text-base">
+                  Free delivery on your first order and over ₹500
+                </p>
+              </div>
 
-            <p className="font-bold text-[25px]"> - Only Rs 500/-</p>
+              <p className="font-bold text-lg sm:text-xl text-red-600">Only ₹500/-</p>
+            </div>
           </div>
 
-          <AdsBannerSlider items={4} />
+          <div className="mt-8">
+            <AdsBannerSlider items={4} />
+          </div>
         </div>
       </section>
 
-      <section className="py-5 pt-0 bg-white">
-        <div className="container">
-          <h2 className="text-[25px] font-[600]">Latest Products</h2>
-          <ProductsSlider items={6} />
+      {/* Latest Products Section */}
+      <section className="py-8 bg-white">
+        <div className="container px-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold">Latest Products</h2>
+            <a href="/productListing" className="text-sm text-blue-600 hover:underline">
+              View All
+            </a>
+          </div>
+          
+          <ProductsSlider 
+            products={newProducts}
+            slidesPerViewMobile={1.2}
+            slidesPerViewTablet={2.5}
+            slidesPerViewDesktop={4}
+            slidesPerViewLarge={5}
+          />
 
-          <AdsBannerSlider items={3} />
+          <div className="mt-8">
+            <AdsBannerSlider items={2} />
+          </div>
         </div>
       </section>
 
-      <section className="py-5 pt-0 bg-white">
-        <div className="container">
-          <h2 className="text-[25px] font-[600]">Featured Products</h2>
-          <ProductsSlider items={6} />
-
-          <AdsBannerSlider items={2} />
+      {/* Featured Products Section */}
+      <section className="py-8 bg-white">
+        <div className="container px-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold">Featured Products</h2>
+            <a href="/productListing" className="text-sm text-blue-600 hover:underline">
+              View All
+            </a>
+          </div>
+          
+          <ProductsSlider 
+            products={featuredProducts}
+            slidesPerViewMobile={1.2}
+            slidesPerViewTablet={2.5}
+            slidesPerViewDesktop={4}
+            slidesPerViewLarge={5}
+          />
         </div>
       </section>
 
-      <section className="py-5 pb-8 pt-0 bg-white blogsection">
-      
-        <div className="container py-5">
-        <h2 className="text-[25px] font-[600] mb-4">From the Blog</h2>
+      {/* Blog Section */}
+      <section className="py-8 bg-gray-50">
+        <div className="container px-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold">From the Blog</h2>
+            <Link to="/blog" className="text-sm text-blue-600 hover:underline">
+              View All Posts
+            </Link>
+          </div>
+          
           <Swiper
-            slidesPerView={4}
-            spaceBetween={30}
-            navigation={true}
-            modules={[Navigation]}
-            className="blogSlider"
+            slidesPerView={isMobile ? 1.2 : 3}
+            spaceBetween={20}
+            navigation={!isMobile}
+            pagination={{
+              clickable: true,
+              dynamicBullets: true,
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
+            }}
+            modules={[Navigation, Pagination]}
+            className="blog-swiper pb-10"
           >
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-
+            {blogPosts.map((blog) => (
+              <SwiperSlide key={blog.id}>
+                <BlogItem post={blog} />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
       </section>
-
-      
-
     </>
   );
 };

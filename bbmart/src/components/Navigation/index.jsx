@@ -1,113 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import { RiMenu2Fill } from 'react-icons/ri';
 import { LiaAngleDownSolid } from 'react-icons/lia';
 import CategoryPanel from './CategoryPanel';
-import '../Navigation/style.css';
-
+import './style.css';
 
 const Navigation = () => {
     const [isOpenCatPanel, setIsOpenCatPanel] = useState(false);
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+    // Handle window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 1024);
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const openCategoryPanel = () => {
         setIsOpenCatPanel(true);
     };
 
+    const closeCategoryPanel = () => {
+        setIsOpenCatPanel(false);
+    };
+
+    const handleMouseEnter = (index) => {
+        setHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredIndex(null);
+    };
+
+    // Navigation items with submenu data
+    const navItems = [
+        { text: 'Home', link: '/', hasSubmenu: false },
+        { 
+            text: 'Stationery', 
+            link: '/productListing', 
+            hasSubmenu: true,
+            submenu: [
+                { text: 'Notebooks', link: '/productListing?category=notebooks' },
+                { text: 'Pens', link: '/productListing?category=pens' },
+                { text: 'Markers', link: '/productListing?category=markers' },
+                { text: 'Organizers', link: '/productListing?category=organizers' },
+                { text: 'Accessories', link: '/productListing?category=accessories' }
+            ]
+        },
+        { text: 'Custom Printing', link: '/custom-printing', hasSubmenu: false },
+        { text: 'Blog', link: '/blog', hasSubmenu: false },
+        { text: 'About Us', link: '/about-us', hasSubmenu: false },
+        { text: 'Contact Us', link: '/contact-us', hasSubmenu: false },
+    ];
 
     return (
-        <>
-            <nav className='py-2'>
-                <div className="container flex item-center justify-end gap-8">
-                    <div className="col_1 w-[25%]">
-                        <Button className='!text-black gap-2 w-full' onClick={openCategoryPanel}>
-                            <RiMenu2Fill className='text-[18px]' />
-                            SHOP BY CATEGORIES
-                            <LiaAngleDownSolid className='text-[14px] m1-auto font-bold' />
-                        </Button>
-                    </div>
+        <div className="navigation-container">
+            <ul className="flex items-center gap-1 navigation-menu">
+                {navItems.map((item, index) => (
+                    <li 
+                        key={index} 
+                        className="list-none relative"
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        <Link to={item.link} className="block">
+                            <div className="nav-item text-gray-800 hover:text-blue-600 transition-colors text-sm px-3 h-full flex items-center whitespace-nowrap">
+                                {item.text}
+                                {item.hasSubmenu && <LiaAngleDownSolid className="ml-1 text-xs" />}
+                            </div>
+                        </Link>
 
-                    <div className="col_2 w-[75%]">
-                        <ul className='flex items-center gap-6 nav'>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500] font-style:bold">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>
-                                    Home
-                                    </Button>
-                                </Link>
-
-                            </li>
-                            <li className='list-none relative'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>Stationary</Button>
-                                </Link>
-
-                                <div className="submenu absolute top-[120%] left-[0%] min-w-[200px] bg-white shadow-md opacity-0 transition-all">
-                                    <ul>
-                                        <li className="list-none w-full">
-                                            <Link to="/" className='w-full'>
-                                            <Button className='!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none'>Men</Button>
+                        {item.hasSubmenu && hoveredIndex === index && (
+                            <div className="submenu absolute top-full left-0 z-20 min-w-[200px] bg-white shadow-lg rounded-md overflow-hidden">
+                                <ul>
+                                    {item.submenu.map((subItem, subIndex) => (
+                                        <li key={subIndex} className="list-none w-full">
+                                            <Link to={subItem.link} className="w-full">
+                                                <div className="text-gray-700 w-full text-left justify-start rounded-none hover:bg-gray-100 px-4 py-3 text-sm">
+                                                    {subItem.text}
+                                                </div>
                                             </Link>
                                         </li>
-                                        <li className="list-none w-full">
-                                            <Link to="/" className='w-full'>
-                                            <Button className='!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none'>Men</Button>
-                                            </Link>
-                                        </li>
-                                        <li className="list-none w-full">
-                                            <Link to="/" className='w-full'>
-                                            <Button className='!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none'>Men</Button>
-                                            </Link>
-                                        </li>
-                                        <li className="list-none w-full">
-                                            <Link to="/" className='w-full'>
-                                            <Button className='!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none'>Men</Button>
-                                            </Link>
-                                        </li>
-                                        <li className="list-none w-full">
-                                            <Link to="/" className='w-full'>
-                                            <Button className='!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none'>Men</Button>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </li>
+                ))}
+            </ul>
 
-
-                            </li>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>Printing</Button>
-                                </Link>
-                            </li>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>Branding</Button>
-                                </Link>
-                            </li>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>Essentials</Button>
-                                </Link>
-                            </li>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgb(255,0,0)]'>Clothings</Button>
-                                </Link>
-                            </li>
-                            <li className='list-none'>
-                                <Link to="/" className="link transition text-[14px] font-[500]">
-                                    <Button className='link transition !font-[500] !text-[#130e0e] hover:!text-[rgba(255,48,48,0.91)]'>Groceries</Button>
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-
-            {/* Category panel and its components */}
-            <CategoryPanel isOpenCatPanel={isOpenCatPanel} setIsOpenCatPanel={setIsOpenCatPanel} />
-        </>
+            {isOpenCatPanel && (
+                <CategoryPanel 
+                    isOpen={isOpenCatPanel} 
+                    onClose={closeCategoryPanel} 
+                />
+            )}
+        </div>
     );
-}
+};
 
 export default Navigation;

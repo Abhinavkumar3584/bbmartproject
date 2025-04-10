@@ -1,78 +1,151 @@
 import React from "react";
-import "../ProductItem/style.css";
 import { Link } from "react-router-dom";
 import Rating from "@mui/material/Rating";
+import { styled } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import Button from "@mui/material/Button";
-import { FaRegHeart } from "react-icons/fa";
-import { IoGitCompareOutline } from "react-icons/io5";
-import { MdZoomOutMap } from 'react-icons/md';
-import { IoCartOutline } from "react-icons/io5";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
+// Styled icon button for consistent appearance and touch targets
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  backgroundColor: 'white',
+  '&:hover': {
+    backgroundColor: '#3f51b5',
+    color: 'white',
+  },
+  width: '40px',
+  height: '40px',
+  boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+  margin: '0 4px',
+  '@media (max-width: 640px)': {
+    width: '36px',
+    height: '36px',
+  },
+}));
 
+const ProductItem = ({ product }) => {
+  // Default values if product is not provided
+  const defaultProduct = {
+    id: 1,
+    name: "Sample Product",
+    category: "category",
+    price: 29.99,
+    oldPrice: 39.99,
+    rating: 4,
+    reviewCount: 10,
+    discount: 25,
+    image: "https://placehold.co/300x300?text=Product",
+    description: "This is a sample product description. Replace with actual product description."
+  };
+  
+  // Use provided product data or defaults
+  const {
+    id, 
+    name, 
+    category,
+    price, 
+    oldPrice, 
+    rating, 
+    reviewCount,
+    discount,
+    image,
+    description
+  } = product || defaultProduct;
 
-const ProductItem = () => {
   return (
-    <div className="productItem shadow-lg rounded-md overflow-hidden border-2 border-[rgba(0,0,0,0.1)] flex items-center">
-      <div className="group imgWrapper w-[25%] h-[210px] overflow-hidden rounded-md relative">
-        <img
-          src="https://images.meesho.com/images/products/483193801/rs2gw_400.webp"
-          alt="product"
-          className="w-full"
-        />
-        <span className="discount flex items center absolute top-[18px] left-[18px] z-50 bg-[#f11f1f] text-white rounded-lg p-1 text-[12px] font-[500]">10%</span>
-
-        <div className="actions absolute top-[-200px] right-[0px] z-50 flex items-center gap-2 flex-col w-[50px] transition-all duration-300 group-hover:top-[15px]  opacity-0 group-hover:opacity-100">
-         <Button className="!w-[30px] !h-[30px] !min-w-[30px] !rounded-full !bg-white
-      text-black hover:!bg-[red] hover:text-white group">
-          <MdZoomOutMap className="text-[18px] !text-black group-hover:text-white hover:!text-white"/>
-          </Button>
-
-          <Button className="!w-[30px] !h-[30px] !min-w-[30px] !rounded-full !bg-white
-      text-black hover:!bg-[red] hover:text-white group">
-          <IoGitCompareOutline className="text-[18px] !text-black group-hover:text-white hover:!text-white"/>
-          </Button>
-
-          <Button className="!w-[30px] !h-[30px] !min-w-[30px] !rounded-full !bg-white
-      text-black hover:!bg-[red] hover:text-white group">
-          <FaRegHeart className="text-[18px] !text-black group-hover:text-white hover:!text-white"/>
-          </Button>
+    <div className="flex flex-col sm:flex-row bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+      {/* Image section */}
+      <div className="relative w-full sm:w-1/4 h-64 sm:h-auto overflow-hidden">
+        {discount && (
+          <div className="absolute top-3 left-3 z-10">
+            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">-{discount}%</span>
           </div>
-
+        )}
+        
+        <Link to={`/product/${id}`} className="block h-full">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://placehold.co/300x300?text=Product';
+            }}
+          />
+        </Link>
       </div>
 
-      <div className="info p-3 py-5 px-8 w-[75%]">
-        <h6 className="text-[15px]">
-          <Link to="/" className="link transition-all duration-300">
-            Soy Green
+      {/* Content section */}
+      <div className="flex-1 p-4 sm:p-6 flex flex-col">
+        <div className="mb-1">
+          <Link to={`/productListing?category=${category}`} className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+            {category?.charAt(0).toUpperCase() + category?.slice(1)}
           </Link>
-        </h6>
-
-        <h3 className="text-[18px] title mt-3 font-[500] mb-2 text-[rgba(0,0,0,0.9)]">
-          
-          <Link to="/" className="link transition-all duration-300">
-            Sir Georgette Pink Color Saree with Blouse piece
-          </Link>
-        </h3>
-        <p className="text-[14px] text-gray-600 mb-3 line-clamp-2">
-          Elegant Georgette saree with intricate embroidery work. Comes with matching blouse piece, perfect for festive occasions and celebrations.
-        </p>
-
-        <Rating name="size-small" defaultValue={2} size="small" readOnly />
-
-        <div className="flex items-center gap-4">
-            <span className="oldPrice line-through text-grey-500 text-[16px] font-[500]">$500</span>
-            <span className="price text-[red] font-bold">$500</span>
         </div>
 
-        <div className="flex items-center gap-3 mt-3">
-         <Button className="btn-org flex gap-2"><IoCartOutline className="text-[20px]"/>
-            Add to Cart     
+        <h3 className="text-lg sm:text-xl font-medium mb-2">
+          <Link to={`/product/${id}`} className="hover:text-blue-600 transition-colors">
+            {name}
+          </Link>
+        </h3>
+        
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          {description || `${name} - high-quality product available at BBMart.`}
+        </p>
 
+        <div className="flex items-center mb-3">
+          <Rating 
+            value={rating} 
+            precision={0.5} 
+            size="small" 
+            readOnly 
+            className="text-amber-400"
+          />
+          {reviewCount > 0 && (
+            <span className="text-xs text-gray-500 ml-2">({reviewCount} reviews)</span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3 mb-4">
+          {oldPrice && (
+            <span className="text-gray-500 line-through text-sm">${oldPrice.toFixed(2)}</span>
+          )}
+          <span className="text-red-600 font-bold text-xl">${price.toFixed(2)}</span>
+        </div>
+
+        <div className="mt-auto flex flex-wrap items-center gap-2">
+          <Button 
+            variant="contained"
+            startIcon={<ShoppingCartIcon />}
+            className="bg-blue-600 hover:bg-blue-700 min-h-[44px] px-4 py-2 text-sm"
+          >
+            Add to Cart
           </Button>
+          
+          <div className="flex items-center">
+            <Tooltip title="Add to wishlist">
+              <StyledIconButton aria-label="wishlist">
+                <FavoriteBorderIcon />
+              </StyledIconButton>
+            </Tooltip>
+            
+            <Tooltip title="Quick view">
+              <StyledIconButton aria-label="quick view">
+                <VisibilityIcon />
+              </StyledIconButton>
+            </Tooltip>
+            
+            <Tooltip title="Compare">
+              <StyledIconButton aria-label="compare">
+                <CompareArrowsIcon />
+              </StyledIconButton>
+            </Tooltip>
           </div>
-
-
-
+        </div>
       </div>
     </div>
   );

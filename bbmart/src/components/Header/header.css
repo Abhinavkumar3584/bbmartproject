@@ -1,0 +1,154 @@
+/* Header Styles */
+.header-container {
+  transition: all 0.3s ease;
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+}
+
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease-in-out;
+}
+
+.header-main {
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.header-icon-button {
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Body padding when header is sticky */
+body.has-sticky-header {
+  padding-top: 64px; /* Match header height */
+}
+
+@media (min-width: 768px) {
+  body.has-sticky-header {
+    padding-top: 64px; /* Taller for desktop */
+  }
+}
+
+/* Mobile enhancements */
+@media (max-width: 767px) {
+  .header-main {
+    height: 56px;
+  }
+  
+  body.has-sticky-header {
+    padding-top: 56px; /* Match mobile header height */
+  }
+  
+  .header-icon-button {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .mobile-search-container .search-container {
+    display: flex;
+    width: 100%;
+  }
+  
+  .mobile-search-container input {
+    height: 40px;
+    border-radius: 4px;
+  }
+}
+
+/* Animation for sticky header */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Container width refinements to prevent overflow */
+.header-container .container {
+  max-width: 100%;
+}
+
+/* Ensure the navigation stays in a single line */
+.header-main .navigation-container {
+  overflow: visible;
+  height: 100%;
+}
+
+/* Tooltip fixes */
+.MuiTooltip-tooltip {
+  font-size: 0.75rem !important;
+}
+
+/* Fix z-index for dropdown menus */
+.submenu {
+  z-index: 1010 !important;
+}
+
+/* Remove any unwanted scrollbars */
+.header-container,
+.header-main,
+.navigation-container {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* Badge position adjustments */
+.MuiBadge-badge {
+  font-size: 0.7rem !important;
+  min-width: 16px !important;
+  height: 16px !important;
+}
+
+/* Top strip responsive adjustments */
+@media (max-width: 575px) {
+  .top-strip {
+    display: none;
+  }
+}
+
+/* Header logo responsive sizes */
+@media (max-width: 375px) {
+  .header .logo-container img {
+    max-width: 110px;
+  }
+}
+
+/* Navigation in header */
+.header-main .navigation-menu {
+  margin: 0;
+  height: 100%;
+}
+
+.header-main .navigation-menu li {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.header-main .navigation-menu a {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Improve touch targets for mobile */
+@media (max-width: 767px) {
+  .header-main .logo img {
+    max-height: 36px;
+  }
+}
